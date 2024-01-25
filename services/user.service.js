@@ -9,13 +9,20 @@ class UserService {
   async create(data) {
     const hash = await bcrypt.hash(data.password, 10);
     const newUser = await models.User.create({ ...data, password: hash });
-    delete newUser.dataValues.password;
+    delete newUser.dataValues.password; //esto evita que al crearse un usuario se regrese la contraseña
     return newUser;
   }
 
   async find() {
     const rta = await models.User.findAll({
       include: ['customer'],
+    });
+    return rta;
+  }
+
+  async findByEmail(email) {
+    const rta = await models.User.findOne({
+      where: { email },
     });
     return rta;
   }
